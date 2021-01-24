@@ -1,12 +1,12 @@
 import math
-from infra.PygameObject import PygameObject
+from space_invader.game.infra.PygameObject import PygameObject
 import random
 
 
 class Enemy(PygameObject):
 
     def __init__(self, x=None, y=None):
-        self.x = random.randint(0, 800)
+        self.x = random.randint(0, 735)
         self.y = random.randint(50, 150)
         self.enemyX_change = 0.2
         self.enemyY_change = 3

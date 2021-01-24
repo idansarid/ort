@@ -1,5 +1,5 @@
 import math
-from infra.PygameObject import PygameObject
+from space_invader.game.infra.PygameObject import PygameObject
 
 
 class Player(PygameObject):

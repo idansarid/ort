@@ -1,6 +1,6 @@
-from infra.Player import Player
-from infra.Bullet import Bullet
-from infra.Enemy import Enemy
+from space_invader.game.infra.Player import Player
+from space_invader.game.infra.Bullet import Bullet
+from space_invader.game.infra.Enemy import Enemy
 import pygame
 import random
 import math
@@ -31,6 +31,7 @@ class Board(object):
         self.enemy = Enemy()
         self.bullet = Bullet()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.score = 0
         self.background = pygame.image.load("outer_space.jpg")
 
     def player_blit(self, x, y):
@@ -52,6 +53,13 @@ class Board(object):
         pygame.time.delay(1000)
 
     def bullet_hits_enemy(self, x2, x1, y2, y1):
+        if self.is_collision(x2=x2,x1=x1,y2=y2,y1=y1):
+            print(self.score)
+            # self.display_message("Enemy is Hit!!!")
+
+    def is_collision(self,x1,y1,x2,y2):
         dis = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
         if dis < 27:
-            self.display_message("Enemy is Hit!!!")
+            return True
+        else:
+            return False
