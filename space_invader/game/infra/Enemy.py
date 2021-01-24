@@ -23,12 +23,3 @@ class Enemy(PygameObject):
         elif self.x >= 736:
             self.enemyX_change = -0.2
             self.x += self.enemyX_change
-
-    def __sub__(self, other):
-        pass
-
-    def __divmod__(self, other):
-        pass
-
-    def __mul__(self, other):
-        pass

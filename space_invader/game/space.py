@@ -36,7 +36,8 @@ if __name__ == '__main__':
         board.player.y += board.player.playerY_change
         # boundaries of space ships
         board.player.move()
-        board.enemy.move()
+        for enemy in board.enemies:
+            enemy.move()
 
         # bullet handling
         if board.bullet.y <= 0:
@@ -45,15 +46,20 @@ if __name__ == '__main__':
         elif board.bullet.bullet_state == "fire":
             board.fire_bullet(board.bullet.x, board.bullet.y)
             board.bullet.y -= board.bullet.bulletY_change
-            board.bullet_hits_enemy(x2=board.enemy.x, x1=board.bullet.x, y2=board.enemy.y, y1=board.bullet.y)
+            # board.bullet_hits_enemy(x2=board.enemy.x, x1=board.bullet.x, y2=board.enemy.y, y1=board.bullet.y)
 
-        if board.is_collision(x2=board.enemy.x, x1=board.bullet.x, y2=board.enemy.y, y1=board.bullet.y):
-            board.bullet.y = 480
-            board.bullet.bullet_state = "ready"
-            board.score += 1
-            board.enemy.x = random.randint(0, 735)
-            board.enemy.y = random.randint(50, 150)
+        for enemy in board.enemies:
+            if board.is_collision(x2=enemy.x, x1=board.bullet.x, y2=enemy.y, y1=board.bullet.y):
+                board.bullet.y = 480
+                board.bullet.bullet_state = "ready"
+                board.score += 1
+                enemy.x = random.randint(0, 735)
+                enemy.y = random.randint(50, 150)
+                print(board.score)
 
         board.player_blit(board.player.x, board.player.y)
-        board.enemy_blit(board.enemy.x, board.enemy.y)
+        for enemy in board.enemies:
+            board.enemy_blit(enemy.x, enemy.y)
+
+        board.show_score()
         pygame.display.update()

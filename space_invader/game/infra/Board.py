@@ -23,16 +23,23 @@ GREY = (200, 200, 200)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
+font = pygame.font.Font('freesansbold.ttf', 32)
+
+
 
 class Board(object):
 
     def __init__(self):
         self.player = Player()
-        self.enemy = Enemy()
+        self.enemies = [Enemy(),Enemy(), Enemy(),Enemy()]
         self.bullet = Bullet()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.score = 0
         self.background = pygame.image.load("outer_space.jpg")
+
+    def show_score(self, x=10, y=10):
+        score = font.render("Score: {}".format(str(self.score)),True, (255,255,255))
+        self.screen.blit(score,(x,y))
 
     def player_blit(self, x, y):
         self.screen.blit(playerImg, (x, y))
