@@ -1,0 +1,108 @@
+import pygame
+from game.infra.Board import Board
+from game.infra.Board import Player
+from game.network.client import Client
+import random
+import time
+
+if __name__ == '__main__':
+    board = Board()
+    client = Client()
+    # startPos = board.read_pos(client.getPos())
+    player_chosen = client.getPlayer()
+    if player_chosen == 0:
+        p = Player()
+        p2 = Player(x=170, y=480)
+    else:
+        p2 = Player()
+        p = Player(x=170, y=480)
+    running = True
+    count = 0
+    while running:
+        # time.sleep(10)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    p.playerX_change = -0.1
+                if event.key == pygame.K_RIGHT:
+                    p.playerX_change = 0.1
+                if event.key == pygame.K_UP:
+                    p.playerY_change = -0.1
+                if event.key == pygame.K_DOWN:
+                    p.playerY_change = 0.1
+                if event.key == pygame.K_SPACE:
+                    if board.bullet.bullet_state == "ready":
+                        board.bullet.x = p.x
+                        board.bullet.y = p.y
+                        board.fire_bullet(board.bullet.x, board.bullet.y)
+
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                    p.playerX_change = 0
+                    p.playerY_change = 0
+
+        if board.win:
+            running = False
+            continue
+
+        board.screen.fill((0, 0, 0))
+        board.screen.blit(board.background, (0, 0))
+        p.move()
+        ################### Network #################################################
+        if count % 1000 == 0:
+            aa = client.send("Coordinates: {} {}".format(p.x, p.y))
+            print(aa)
+            count = 0
+        count += 1
+        ############################################################################
+        # boundaries of space ships
+        p.boundary_check()
+        for enemy in board.enemies:
+            enemy.move()
+
+        # bullet handling
+        if board.bullet.y <= 0:
+            board.bullet.y = 480
+            board.bullet.bullet_state = "ready"
+        elif board.bullet.bullet_state == "fire":
+            board.fire_bullet(board.bullet.x, board.bullet.y)
+            board.bullet.y -= board.bullet.bulletY_change
+
+        for enemy in board.enemies:
+            if board.is_collision(x2=enemy.x, x1=board.bullet.x, y2=enemy.y, y1=board.bullet.y):
+                board.bullet.y = 480
+                board.bullet.bullet_state = "ready"
+                board.score += 1
+                ################### Network #################################################
+                client.send(str(board.score))
+                ############################################################################
+                enemy.hit_count += 1
+                enemy.x = random.randint(0, 735)
+                enemy.y = random.randint(50, 150)
+                print(board.score)
+
+        board.player_blit(p.x, p.y)
+        # p2Pos = board.read_pos(client.send(board.make_pos((p.x, p.y))))
+        # p2.x = int(p2Pos[0] + 100)
+        # p2.y = int(p2Pos[1] + 10)
+        if player_chosen == 0:
+            res = client.send("getPlayerData 1")
+        else:
+            res = client.send("getPlayerData 0")
+
+        if res is None:
+            continue
+        try:
+            coor = res.split()
+        except:
+            continue
+
+        board.player_blit(int(coor[0]), int(coor[1]))
+        for enemy in board.enemies:
+            board.enemy_blit(enemy.x, enemy.y)
+
+        board.show_score()
+        board.is_win()
+        pygame.display.update()
