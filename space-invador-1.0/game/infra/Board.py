@@ -1,6 +1,6 @@
-from game.infra.Player import Player
-from game.infra.Bullet import Bullet
-from game.infra.Enemy import Enemy
+from infra.Player import Player
+from infra.Bullet import Bullet
+from infra.Enemy import Enemy
 import pygame
 import random
 import math
