@@ -1,7 +1,7 @@
 import pygame
-from game.infra.Board import Board
-from game.infra.Board import Player
-from game.network.client import Client
+from infra.Board import Board
+from infra.Board import Player
+from network.client import Client
 import random
 import time
 
