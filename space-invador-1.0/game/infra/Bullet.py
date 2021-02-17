@@ -1,5 +1,5 @@
 import math
-from game.infra.PygameObject import PygameObject
+from infra.PygameObject import PygameObject
 
 
 class Bullet(PygameObject):
